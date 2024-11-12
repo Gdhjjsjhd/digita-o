@@ -1,60 +1,55 @@
-const textToType = "A digitação é uma habilidade importante para a comunicação moderna. "
+const textToType = "A digitação é uma habilidade importante para a comunicação moderna.";
 
 let startTime;
 let timerInterval;
 let isTyping = false;
 
 function startTypingTest(){
-    isTyping = false
-    clearInterval(timerInterval)
+    isTyping = true; // O teste começa ao dar o foco
+    clearInterval(timerInterval);
 
-
-    document.getElementById('result').innerHTML = ''
-    document.getElementById('timer').innerHTML = '15'
-
+    document.getElementById('result').innerHTML = '';
+    document.getElementById('timer').innerHTML = '15';
 
     const inputField = document.getElementById('inputField');
 
-    inputField.value = ''
+    inputField.value = '';
     inputField.focus();
+
+    // Inicia o temporizador
+    startTime = Date.now();  // Marca o início do tempo
+    timerInterval = setInterval(updateTimer, 1000);  // Atualiza o timer a cada segundo
 }
 
-function upateTimer(){
-    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+function updateTimer(){
+    const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // Tempo passado em segundos
+    const remainingTime = 15 - elapsedTime; // Tempo restante
 
-    const remainingTime = 15 - elapsedTime;
+    document.getElementById('timer').innerHTML = remainingTime;
 
-    document,getElementById('timer').innerHTML = remainingTime;
-
-    if(remainingTime <= 0){
+    if (remainingTime <= 0) {
         clearInterval(timerInterval);
-        finishTest();
+        finishTest(); // Finaliza o teste
     }
 }
 
 function finishTest(){
-    isTyping = false
-    const inputField = document.getElementById('inputField')
+    isTyping = false; // Finaliza o teste
+    const inputField = document.getElementById('inputField');
 
-    const typedText = inputField.value.trim();
+    const typedText = inputField.value.trim();  // Remove espaços extras
+    const totalWords = typedText.split(' ').filter(word => word.length > 0).length; // Conta palavras
+    const timeTaken = 15; // Tempo fixo de 15 segundos
 
-    const totalWords = typedText.split(' ').filter(word => word.length > 0).length
-    const timeTaken = 15
+    const speed = (totalWords / timeTaken) * 60; // Calcula a velocidade
 
-
-
-    const speed = (totalWords / timeTaken) * 60
-
-    document.getElementById('inputField').innerHTML =` Você diogitou ${totalWords} palavras em 15 segundos. Sua velocidade é de ${speed.toFixed(2)} palavras por minito.`
-
+    document.getElementById('result').innerHTML = `Você digitou ${totalWords} palavras em 15 segundos. Sua velocidade é de ${speed.toFixed(2)} palavras por minuto.`;
 }
 
 document.getElementById('inputField').addEventListener('focus', () => {
-    if(!isTyping){
-        isTyping = true;
-        startTypingTest();
+    if (!isTyping) {
+        startTypingTest(); // Começa o teste quando o campo recebe o foco
     }
-})
-
+});
 
 document.getElementById('textToType').innerHTML = textToType;
